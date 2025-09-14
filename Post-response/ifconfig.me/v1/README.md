@@ -1,29 +1,21 @@
 ````js
-// Récupérer la réponse de ton API
-let apiResponse = pm.response.json();
-
-// Appeler ifconfig.me en parallèle
-pm.sendRequest("https://ifconfig.me", function (err, res) {
+pm.sendRequest("https://ifconfig.me/all", function (err, res) {
     if (!err) {
-        let publicIP = res.text();
-        
-        // Afficher dans la console
-        console.log("Mon IP publique:", publicIP);
+        let body = res.text();   // ça donne un texte brut
+        // On récupère seulement la ligne avec ip_addr
+        let match = body.match(/ip_addr:\s*([0-9\.]+)/);
+        if (match) {
+            let ip = match[1];
+            console.log("Mon IP publique:", ip);
 
-        // Ajouter comme variable Postman
-        pm.environment.set("publicIP", publicIP);
-
-        // Tu peux aussi fusionner infos dans une variable
-        pm.environment.set("apiPlusIP", {
-            apiData: apiResponse,
-            myIP: publicIP
-        });
+            // Optionnel : stocker dans une variable
+            pm.environment.set("publicIP", ip);
+        }
     }
 });
-
 ````
 
 ---
 
 ## O/P
-<img src="https://i.imgur.com/yJ23ScL.png">
+<img src="https://i.imgur.com/3LI3A5e.png">
